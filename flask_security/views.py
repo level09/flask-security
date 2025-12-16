@@ -710,7 +710,7 @@ def change_password():
             get_url(cv("POST_CHANGE_VIEW")) or get_url(cv("POST_LOGIN_VIEW"))
         )
 
-    active_password = True if current_user.password else False
+    active_password = current_user.has_usable_password()
     if _security._want_json(request):
         form.user = current_user
         payload = dict(active_password=active_password)

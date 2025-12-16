@@ -3,6 +3,18 @@ Flask-Security Changelog
 
 Here you can see the full list of changes between each Flask-Security release.
 
+Version 5.7.2
+-------------
+
+Released TBD
+
+Features & Improvements
++++++++++++++++++++++++
+- (:pr:`XXXX`) Add :meth:`.UserMixin.has_usable_password` method to support OAuth-only
+  users who have a password hash but don't know their password. Applications can
+  override this method to customize the logic for determining if a user should be
+  required to enter their current password when changing passwords.
+
 Version 5.7.1
 -------------
 

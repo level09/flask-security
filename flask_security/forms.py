@@ -923,11 +923,11 @@ class ChangePasswordForm(Form):
         if not super().validate(**kwargs):
             return False
 
-        # If user doesn't have a password then the caller (view) has already
-        # verified a current fresh session.
+        # If user doesn't have a usable password (e.g., OAuth-only users) then
+        # the caller (view) has already verified a current fresh session.
         assert isinstance(self.password.errors, list)
         assert isinstance(self.new_password.errors, list)
-        if current_user.password:
+        if current_user.has_usable_password():
             if not self.password.data or not self.password.data.strip():
                 self.password.errors.append(get_message("PASSWORD_NOT_PROVIDED")[0])
                 return False

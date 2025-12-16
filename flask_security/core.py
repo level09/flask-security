@@ -912,6 +912,18 @@ class UserMixin(BaseUserMixin):
         """Returns `True` if the user is active."""
         return self.active
 
+    def has_usable_password(self) -> bool:
+        """Returns `True` if the user has a password they can use to authenticate.
+
+        The default implementation returns True if password is set. Applications
+        may override this to return False for users who have a password hash but
+        don't actually know their password (e.g., OAuth-only users created with
+        a random password).
+
+        .. versionadded:: 5.7.2
+        """
+        return bool(self.password)
+
     def get_auth_token(self) -> str | bytes:
         """Constructs the user's authentication token.
 

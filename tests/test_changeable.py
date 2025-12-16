@@ -716,3 +716,28 @@ def test_csrf_json(app, client):
     csrf_token = response.json["response"]["csrf_token"]
     response = client.post("/change", json=data, headers={"X-CSRF-Token": csrf_token})
     assert response.status_code == 200
+
+
+def test_has_usable_password_default(app, sqlalchemy_datastore):
+    """Test that has_usable_password() returns True for users with passwords."""
+    init_app_with_options(app, sqlalchemy_datastore)
+
+    with app.test_request_context():
+        user = sqlalchemy_datastore.find_user(email="matt@lp.com")
+        # Default implementation should return True when password exists
+        assert user.has_usable_password() is True
+
+
+def test_has_usable_password_json(app, client_nc):
+    """Test that change password view returns active_password via has_usable_password()."""
+    # Verify JSON response includes active_password based on has_usable_password()
+    login_response = json_authenticate(client_nc)
+    token = login_response.json["response"]["user"]["authentication_token"]
+
+    response = client_nc.get(
+        "/change",
+        headers={"Content-Type": "application/json", "Authentication-Token": token},
+    )
+    assert response.status_code == 200
+    # User with password should have active_password=True
+    assert response.json["response"]["active_password"] is True
